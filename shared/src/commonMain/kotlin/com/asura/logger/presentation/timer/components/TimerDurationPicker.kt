@@ -71,7 +71,7 @@ fun TimerDurationPicker(
                     range = 0..23,
                     label = "hours",
                     onValueChange = { newHours ->
-                        onIntent(TimerIntent.SetHours(newHours))
+                        onIntent(TimerIntent.SetDuration(duration.copy(hours = newHours)))
                     }
                 )
 
@@ -89,7 +89,7 @@ fun TimerDurationPicker(
                     range = 0..59,
                     label = "min",
                     onValueChange = { newMinutes ->
-                        onIntent(TimerIntent.SetMinutes(newMinutes))
+                        onIntent(TimerIntent.SetDuration(duration.copy(minutes = newMinutes)))
                     }
                 )
 
@@ -107,7 +107,7 @@ fun TimerDurationPicker(
                     range = 0..59,
                     label = "sec",
                     onValueChange = { newSeconds ->
-                        onIntent(TimerIntent.SetSeconds(newSeconds))
+                        onIntent(TimerIntent.SetDuration(duration.copy(seconds = newSeconds)))
                     }
                 )
             }

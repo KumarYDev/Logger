@@ -5,6 +5,7 @@ import com.asura.logger.core.mvi.MviViewModel
 import com.asura.logger.data.datasource.MonotonicTimeSourceProvider
 import com.asura.logger.data.datasource.TimeSourceProvider
 import com.asura.logger.data.repository.TimerRepositoryImpl
+import com.asura.logger.domain.model.TimerDuration
 import com.asura.logger.domain.repository.TimerRepository
 import com.asura.logger.domain.usecase.timer.CalculateTimerProgressUseCase
 import com.asura.logger.domain.usecase.timer.NormalizeDurationUseCase
@@ -45,10 +46,7 @@ class TimerViewModel(
      */
     override fun handleIntent(intent: TimerIntent) {
         when (intent) {
-            is TimerIntent.SetDuration -> setDuration(intent.hours, intent.minutes, intent.seconds)
-            is TimerIntent.SetHours -> setDuration(intent.hours, currentState.duration.minutes, currentState.duration.seconds)
-            is TimerIntent.SetMinutes -> setDuration(currentState.duration.hours, intent.minutes, currentState.duration.seconds)
-            is TimerIntent.SetSeconds -> setDuration(currentState.duration.hours, currentState.duration.minutes, intent.seconds)
+            is TimerIntent.SetDuration -> setDuration(intent.duration)
             is TimerIntent.AddSeconds -> addSeconds(intent.seconds)
             is TimerIntent.Start -> startTimer()
             is TimerIntent.Pause -> pauseTimer()
@@ -58,10 +56,10 @@ class TimerViewModel(
         }
     }
 
-    private fun setDuration(hours: Int, minutes: Int, seconds: Int) {
+    private fun setDuration(duration: TimerDuration) {
         if (currentState.isRunning) return
 
-        val normalized = normalizeDurationUseCase.fromHms(hours, minutes, seconds)
+        val normalized = normalizeDurationUseCase.fromHms(duration.hours, duration.minutes, duration.seconds)
         val totalMs = normalized.totalMillis
 
         baseRemainingMillis = totalMs
@@ -94,7 +92,7 @@ class TimerViewModel(
             }
         } else {
             val updatedDuration = normalizeDurationUseCase.addSeconds(currentState.duration, seconds)
-            setDuration(updatedDuration.hours, updatedDuration.minutes, updatedDuration.seconds)
+            setDuration(updatedDuration)
         }
     }
 

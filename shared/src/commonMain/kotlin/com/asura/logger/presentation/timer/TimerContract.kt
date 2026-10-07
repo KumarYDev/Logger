@@ -54,17 +54,8 @@ data class TimerState(
  * User Intents (Actions) for the Timer screen.
  */
 sealed interface TimerIntent : UiIntent {
-    /** Sets duration by specific hours, minutes, seconds. */
-    data class SetDuration(val hours: Int, val minutes: Int, val seconds: Int) : TimerIntent
-
-    /** Sets specific hours without altering minutes or seconds. */
-    data class SetHours(val hours: Int) : TimerIntent
-
-    /** Sets specific minutes without altering hours or seconds. */
-    data class SetMinutes(val minutes: Int) : TimerIntent
-
-    /** Sets specific seconds without altering hours or minutes. */
-    data class SetSeconds(val seconds: Int) : TimerIntent
+    /** Sets or modifies duration using [TimerDuration]. */
+    data class SetDuration(val duration: TimerDuration) : TimerIntent
 
     /** Adds additional seconds (+30s, +1m, etc.). */
     data class AddSeconds(val seconds: Long) : TimerIntent
