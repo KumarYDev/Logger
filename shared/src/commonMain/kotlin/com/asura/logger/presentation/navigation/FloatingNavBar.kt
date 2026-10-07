@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -122,6 +123,28 @@ private fun FloatingNavIconButton(
             text = icon,
             fontSize = if (isSelected) 24.sp else 20.sp,
             fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FloatingNavBarStopwatchPreview() {
+    MaterialTheme {
+        FloatingNavBar(
+            currentScreen = AppScreen.STOPWATCH,
+            onNavigate = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FloatingNavBarTimerPreview() {
+    MaterialTheme {
+        FloatingNavBar(
+            currentScreen = AppScreen.TIMER,
+            onNavigate = {}
         )
     }
 }

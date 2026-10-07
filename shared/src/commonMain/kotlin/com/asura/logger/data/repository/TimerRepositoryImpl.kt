@@ -12,7 +12,7 @@ import com.asura.logger.domain.repository.TimerRepository
  */
 class TimerRepositoryImpl : TimerRepository {
 
-    private var defaultDuration = TimerDuration(hours = 0, minutes = 1, seconds = 0)
+    private var defaultDuration = TimerDuration(hours = 0, minutes = 0, seconds = 0)
 
     override fun getDefaultDuration(): TimerDuration {
         return defaultDuration

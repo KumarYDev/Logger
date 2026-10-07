@@ -22,6 +22,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -31,11 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.delay
 
 /**
  * ============================================================================
@@ -78,30 +79,53 @@ fun NumberWheelPicker(
         }
     }
 
-    // Only notify parent when USER scroll finishes (drop(1) avoids initial false trigger)
+    var isProgrammaticScroll by remember { mutableStateOf(false) }
+    val currentOnValueChange by rememberUpdatedState(onValueChange)
+    val currentValue by rememberUpdatedState(value)
+
+    // Only notify parent when USER scroll finishes
     LaunchedEffect(listState) {
         var hadUserScroll = false
         snapshotFlow { listState.isScrollInProgress }
             .collect { isScrolling ->
                 if (isScrolling) {
-                    hadUserScroll = true
+                    if (!isProgrammaticScroll) {
+                        hadUserScroll = true
+                    }
                 } else if (hadUserScroll) {
                     hadUserScroll = false
-                    val settledIndex = listState.firstVisibleItemIndex.coerceIn(0, items.lastIndex)
-                    val selectedVal = items[settledIndex]
-                    if (selectedVal != value) {
-                        onValueChange(selectedVal)
+                    if (!isProgrammaticScroll) {
+                        val threshold = itemHeight.value / 2f
+                        val settledIndex = if (listState.firstVisibleItemScrollOffset > threshold) {
+                            (listState.firstVisibleItemIndex + 1).coerceIn(0, items.lastIndex)
+                        } else {
+                            listState.firstVisibleItemIndex.coerceIn(0, items.lastIndex)
+                        }
+                        val selectedVal = items[settledIndex]
+                        if (selectedVal != currentValue) {
+                            currentOnValueChange(selectedVal)
+                        }
                     }
                 }
             }
     }
 
-    // Sync external value changes (e.g., presets) without triggering loop
+    // Sync external value changes (e.g., presets or resets) without triggering loop
     LaunchedEffect(value) {
-        if (!listState.isScrollInProgress) {
-            val targetIndex = items.indexOf(value).coerceAtLeast(0)
-            if (listState.firstVisibleItemIndex != targetIndex) {
+        val targetIndex = items.indexOf(value).coerceAtLeast(0)
+        val threshold = itemHeight.value / 2f
+        val currentSettled = if (listState.firstVisibleItemScrollOffset > threshold) {
+            listState.firstVisibleItemIndex + 1
+        } else {
+            listState.firstVisibleItemIndex
+        }
+        if (currentSettled != targetIndex && !listState.isScrollInProgress) {
+            isProgrammaticScroll = true
+            try {
                 listState.animateScrollToItem(targetIndex)
+            } finally {
+                delay(50)
+                isProgrammaticScroll = false
             }
         }
     }
@@ -179,6 +203,19 @@ fun NumberWheelPicker(
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(top = 6.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun NumberWheelPickerPreview() {
+    MaterialTheme {
+        NumberWheelPicker(
+            value = 15,
+            range = 0..59,
+            onValueChange = {},
+            label = "min"
         )
     }
 }

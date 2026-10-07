@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.asura.logger.core.util.TimeFormatter
@@ -115,5 +116,19 @@ fun StopwatchLapList(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchLapListPreview() {
+    MaterialTheme {
+        StopwatchLapList(
+            laps = listOf(
+                Lap(lapNumber = 3, lapDurationMillis = 15320L, totalElapsedMillis = 55320L),
+                Lap(lapNumber = 2, lapDurationMillis = 20000L, totalElapsedMillis = 40000L),
+                Lap(lapNumber = 1, lapDurationMillis = 20000L, totalElapsedMillis = 20000L)
+            )
+        )
     }
 }

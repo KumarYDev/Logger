@@ -24,7 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.asura.logger.domain.model.TimerDuration
 import com.asura.logger.presentation.timer.components.TimerControls
 import com.asura.logger.presentation.timer.components.TimerDurationPicker
 import com.asura.logger.presentation.timer.components.TimerPresetChips
@@ -164,5 +166,62 @@ fun TimerContent(
         )
 
         Spacer(modifier = Modifier.height(100.dp)) // Clearance for floating navigation
+    }
+}
+
+@Preview
+@Composable
+private fun TimerContentConfiguringPreview() {
+    MaterialTheme {
+        TimerContent(
+            state = TimerState(
+                duration = com.asura.logger.domain.model.TimerDuration(hours = 0, minutes = 5, seconds = 0),
+                totalDurationMillis = 300_000L,
+                remainingMillis = 300_000L,
+                isRunning = false,
+                isPaused = false,
+                isFinished = false,
+                progress = 1f
+            ),
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TimerContentRunningPreview() {
+    MaterialTheme {
+        TimerContent(
+            state = TimerState(
+                duration = com.asura.logger.domain.model.TimerDuration(hours = 0, minutes = 5, seconds = 0),
+                totalDurationMillis = 300_000L,
+                remainingMillis = 180_000L,
+                isRunning = true,
+                isPaused = false,
+                isFinished = false,
+                progress = 0.6f
+            ),
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TimerContentFinishedPreview() {
+    MaterialTheme {
+        TimerContent(
+            state = TimerState(
+                duration = com.asura.logger.domain.model.TimerDuration(hours = 0, minutes = 1, seconds = 0),
+                totalDurationMillis = 60_000L,
+                remainingMillis = 0L,
+                isRunning = false,
+                isPaused = false,
+                isFinished = true,
+                progress = 0f
+            ),
+            onIntent = {}
+        )
     }
 }

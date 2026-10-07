@@ -13,7 +13,7 @@ package com.asura.logger.domain.model
  */
 data class TimerDuration(
     val hours: Int = 0,
-    val minutes: Int = 1,
+    val minutes: Int = 0,
     val seconds: Int = 0
 ) {
     /**

@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.asura.logger.presentation.stopwatch.StopwatchIntent
@@ -170,5 +171,44 @@ fun StopwatchControls(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchControlsIdlePreview() {
+    MaterialTheme {
+        StopwatchControls(
+            isRunning = false,
+            canLap = false,
+            canReset = false,
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchControlsRunningPreview() {
+    MaterialTheme {
+        StopwatchControls(
+            isRunning = true,
+            canLap = true,
+            canReset = false,
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchControlsPausedPreview() {
+    MaterialTheme {
+        StopwatchControls(
+            isRunning = false,
+            canLap = false,
+            canReset = true,
+            onIntent = {}
+        )
     }
 }

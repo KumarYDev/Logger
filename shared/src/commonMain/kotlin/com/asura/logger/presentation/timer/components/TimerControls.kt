@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.asura.logger.presentation.timer.TimerIntent
@@ -161,5 +162,47 @@ fun TimerControls(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun TimerControlsConfiguringPreview() {
+    MaterialTheme {
+        TimerControls(
+            isRunning = false,
+            isPaused = false,
+            isFinished = false,
+            canStart = true,
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TimerControlsRunningPreview() {
+    MaterialTheme {
+        TimerControls(
+            isRunning = true,
+            isPaused = false,
+            isFinished = false,
+            canStart = true,
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TimerControlsPausedPreview() {
+    MaterialTheme {
+        TimerControls(
+            isRunning = false,
+            isPaused = true,
+            isFinished = false,
+            canStart = true,
+            onIntent = {}
+        )
     }
 }

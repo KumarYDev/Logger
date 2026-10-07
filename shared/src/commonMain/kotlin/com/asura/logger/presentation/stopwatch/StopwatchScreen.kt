@@ -10,7 +10,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.asura.logger.domain.model.Lap
 import com.asura.logger.presentation.stopwatch.components.StopwatchClockCard
 import com.asura.logger.presentation.stopwatch.components.StopwatchControls
 import com.asura.logger.presentation.stopwatch.components.StopwatchLapList
@@ -86,5 +88,51 @@ fun StopwatchContent(
         }
 
         Spacer(modifier = Modifier.height(80.dp)) // Clearance for floating navigation bar
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchContentIdlePreview() {
+    androidx.compose.material3.MaterialTheme {
+        StopwatchContent(
+            state = StopwatchState(isRunning = false, elapsedMillis = 0L, laps = emptyList()),
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchContentRunningPreview() {
+    androidx.compose.material3.MaterialTheme {
+        StopwatchContent(
+            state = StopwatchState(
+                isRunning = true,
+                elapsedMillis = 75430L,
+                laps = listOf(
+                    com.asura.logger.domain.model.Lap(lapNumber = 2, lapDurationMillis = 35000L, totalElapsedMillis = 75430L),
+                    com.asura.logger.domain.model.Lap(lapNumber = 1, lapDurationMillis = 40430L, totalElapsedMillis = 40430L)
+                )
+            ),
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchContentPausedPreview() {
+    androidx.compose.material3.MaterialTheme {
+        StopwatchContent(
+            state = StopwatchState(
+                isRunning = false,
+                elapsedMillis = 125000L,
+                laps = listOf(
+                    com.asura.logger.domain.model.Lap(lapNumber = 1, lapDurationMillis = 125000L, totalElapsedMillis = 125000L)
+                )
+            ),
+            onIntent = {}
+        )
     }
 }

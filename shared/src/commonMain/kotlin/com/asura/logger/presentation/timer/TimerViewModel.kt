@@ -46,6 +46,9 @@ class TimerViewModel(
     override fun handleIntent(intent: TimerIntent) {
         when (intent) {
             is TimerIntent.SetDuration -> setDuration(intent.hours, intent.minutes, intent.seconds)
+            is TimerIntent.SetHours -> setDuration(intent.hours, currentState.duration.minutes, currentState.duration.seconds)
+            is TimerIntent.SetMinutes -> setDuration(currentState.duration.hours, intent.minutes, currentState.duration.seconds)
+            is TimerIntent.SetSeconds -> setDuration(currentState.duration.hours, currentState.duration.minutes, intent.seconds)
             is TimerIntent.AddSeconds -> addSeconds(intent.seconds)
             is TimerIntent.Start -> startTimer()
             is TimerIntent.Pause -> pauseTimer()

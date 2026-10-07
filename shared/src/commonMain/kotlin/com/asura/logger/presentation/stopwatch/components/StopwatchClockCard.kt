@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.asura.logger.core.util.TimeFormatter
@@ -69,5 +70,29 @@ fun StopwatchClockCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchClockCardPreview() {
+    MaterialTheme {
+        StopwatchClockCard(
+            elapsedMillis = 65430L,
+            currentLapDurationMillis = 15430L,
+            hasLaps = true
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun StopwatchClockCardInitialPreview() {
+    MaterialTheme {
+        StopwatchClockCard(
+            elapsedMillis = 0L,
+            currentLapDurationMillis = 0L,
+            hasLaps = false
+        )
     }
 }

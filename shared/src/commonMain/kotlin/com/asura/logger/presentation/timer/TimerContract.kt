@@ -27,7 +27,7 @@ import com.asura.logger.domain.model.TimerDuration
  * @property availablePresets List of quick presets in seconds (e.g., 30s, 60s).
  */
 data class TimerState(
-    val duration: TimerDuration = TimerDuration(hours = 0, minutes = 1, seconds = 0),
+    val duration: TimerDuration = TimerDuration(hours = 0, minutes = 0, seconds = 0),
     val totalDurationMillis: Long = 60_000L,
     val remainingMillis: Long = 60_000L,
     val isRunning: Boolean = false,
@@ -56,6 +56,15 @@ data class TimerState(
 sealed interface TimerIntent : UiIntent {
     /** Sets duration by specific hours, minutes, seconds. */
     data class SetDuration(val hours: Int, val minutes: Int, val seconds: Int) : TimerIntent
+
+    /** Sets specific hours without altering minutes or seconds. */
+    data class SetHours(val hours: Int) : TimerIntent
+
+    /** Sets specific minutes without altering hours or seconds. */
+    data class SetMinutes(val minutes: Int) : TimerIntent
+
+    /** Sets specific seconds without altering hours or minutes. */
+    data class SetSeconds(val seconds: Int) : TimerIntent
 
     /** Adds additional seconds (+30s, +1m, etc.). */
     data class AddSeconds(val seconds: Long) : TimerIntent

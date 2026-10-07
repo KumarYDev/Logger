@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.asura.logger.core.util.TimeFormatter
@@ -97,5 +98,37 @@ fun TimerProgressRing(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun TimerProgressRingRunningPreview() {
+    MaterialTheme {
+        TimerProgressRing(
+            remainingMillis = 145000L,
+            totalConfiguredMillis = 300000L,
+            progress = 0.48f,
+            isRunning = true,
+            isPaused = false,
+            isFinished = false,
+            isConfiguring = false
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TimerProgressRingFinishedPreview() {
+    MaterialTheme {
+        TimerProgressRing(
+            remainingMillis = 0L,
+            totalConfiguredMillis = 60000L,
+            progress = 0f,
+            isRunning = false,
+            isPaused = false,
+            isFinished = true,
+            isConfiguring = false
+        )
     }
 }

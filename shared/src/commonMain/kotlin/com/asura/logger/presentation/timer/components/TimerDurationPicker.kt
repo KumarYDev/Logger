@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.asura.logger.domain.model.TimerDuration
@@ -70,7 +71,7 @@ fun TimerDurationPicker(
                     range = 0..23,
                     label = "hours",
                     onValueChange = { newHours ->
-                        onIntent(TimerIntent.SetDuration(newHours, duration.minutes, duration.seconds))
+                        onIntent(TimerIntent.SetHours(newHours))
                     }
                 )
 
@@ -88,7 +89,7 @@ fun TimerDurationPicker(
                     range = 0..59,
                     label = "min",
                     onValueChange = { newMinutes ->
-                        onIntent(TimerIntent.SetDuration(duration.hours, newMinutes, duration.seconds))
+                        onIntent(TimerIntent.SetMinutes(newMinutes))
                     }
                 )
 
@@ -106,10 +107,21 @@ fun TimerDurationPicker(
                     range = 0..59,
                     label = "sec",
                     onValueChange = { newSeconds ->
-                        onIntent(TimerIntent.SetDuration(duration.hours, duration.minutes, newSeconds))
+                        onIntent(TimerIntent.SetSeconds(newSeconds))
                     }
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun TimerDurationPickerPreview() {
+    MaterialTheme {
+        TimerDurationPicker(
+            duration = TimerDuration(hours = 0, minutes = 5, seconds = 30),
+            onIntent = {}
+        )
     }
 }
