@@ -3,13 +3,17 @@ package com.asura.logger.presentation.timer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -40,6 +44,9 @@ import com.asura.logger.presentation.timer.components.TimerProgressRing
  * In Configuration mode: Displays the scrollable Wheel Picker to select duration.
  * When Started: Hides the wheel picker and reveals the animated Countdown Progress
  * Ring and remaining time display.
+ *
+ * Fully responsive across standard phones, foldable devices (folded & unfolded),
+ * tablets, and desktop/web viewports.
  */
 @Composable
 fun TimerScreen(
@@ -57,9 +64,39 @@ fun TimerScreen(
 
 /**
  * Stateless Composable UI for Timer.
+ *
+ * Automatically adapts between Compact Single-Column layout (folded screens & phone portrait)
+ * and Dual-Pane Side-by-Side layout (unfolded foldables, landscape, tablets, desktop).
  */
 @Composable
 fun TimerContent(
+    state: TimerState,
+    onIntent: (TimerIntent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val isExpanded = maxWidth >= 600.dp || (maxWidth > maxHeight && maxWidth >= 480.dp)
+
+        if (isExpanded) {
+            TimerExpandedContent(
+                state = state,
+                onIntent = onIntent
+            )
+        } else {
+            TimerCompactContent(
+                state = state,
+                onIntent = onIntent
+            )
+        }
+    }
+}
+
+/**
+ * Compact Layout: Single vertical scrollable column.
+ * Used on phone portrait and folded outer screens.
+ */
+@Composable
+private fun TimerCompactContent(
     state: TimerState,
     onIntent: (TimerIntent) -> Unit,
     modifier: Modifier = Modifier
@@ -113,7 +150,6 @@ fun TimerContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Scrollable Wheel Picker for Hours, Minutes, Seconds
                     TimerDurationPicker(
                         duration = state.duration,
                         onIntent = onIntent
@@ -121,7 +157,6 @@ fun TimerContent(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Quick Preset Chips (+30s, +1m, +5m, +10m)
                     TimerPresetChips(
                         presets = state.availablePresets,
                         onIntent = onIntent
@@ -132,7 +167,6 @@ fun TimerContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Countdown Ring & Active Remaining Time Display
                     TimerProgressRing(
                         remainingMillis = state.remainingMillis,
                         totalConfiguredMillis = state.totalDurationMillis,
@@ -140,12 +174,12 @@ fun TimerContent(
                         isRunning = state.isRunning,
                         isPaused = state.isPaused,
                         isFinished = state.isFinished,
-                        isConfiguring = false
+                        isConfiguring = false,
+                        modifier = Modifier.size(240.dp)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Quick Add Preset Chips while running/paused
                     TimerPresetChips(
                         presets = state.availablePresets,
                         onIntent = onIntent
@@ -169,13 +203,127 @@ fun TimerContent(
     }
 }
 
+/**
+ * Expanded Layout: Side-by-side dual-pane layout.
+ * Used on unfolded foldable devices (square/wide aspect ratio), landscape phones, and tablets.
+ */
+@Composable
+private fun TimerExpandedContent(
+    state: TimerState,
+    onIntent: (TimerIntent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Left Pane: Duration Picker (Configuring) or Progress Ring (Running/Paused/Finished)
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Crossfade(targetState = state.isConfiguring) { isConfiguring ->
+                if (isConfiguring) {
+                    TimerDurationPicker(
+                        duration = state.duration,
+                        onIntent = onIntent
+                    )
+                } else {
+                    TimerProgressRing(
+                        remainingMillis = state.remainingMillis,
+                        totalConfiguredMillis = state.totalDurationMillis,
+                        progress = state.progress,
+                        isRunning = state.isRunning,
+                        isPaused = state.isPaused,
+                        isFinished = state.isFinished,
+                        isConfiguring = false,
+                        modifier = Modifier.size(220.dp)
+                    )
+                }
+            }
+        }
+
+        // Right Pane: Presets + Controls + Finished Alert
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Finished Alert Banner
+            AnimatedVisibility(visible = state.isFinished) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    ),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "🔔 Timer Finished!",
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        FilledTonalButton(onClick = { onIntent(TimerIntent.DismissFinished) }) {
+                            Text("Dismiss")
+                        }
+                    }
+                }
+            }
+
+            Text(
+                text = "Quick Presets",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.outline,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Presets
+            TimerPresetChips(
+                presets = state.availablePresets,
+                onIntent = onIntent
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Controls
+            TimerControls(
+                isRunning = state.isRunning,
+                isPaused = state.isPaused,
+                isFinished = state.isFinished,
+                canStart = state.canStart,
+                onIntent = onIntent
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
-private fun TimerContentConfiguringPreview() {
+private fun TimerContentCompactConfiguringPreview() {
     MaterialTheme {
         TimerContent(
             state = TimerState(
-                duration = com.asura.logger.domain.model.TimerDuration(hours = 0, minutes = 5, seconds = 0),
+                duration = TimerDuration(hours = 0, minutes = 5, seconds = 0),
                 totalDurationMillis = 300_000L,
                 remainingMillis = 300_000L,
                 isRunning = false,
@@ -190,11 +338,11 @@ private fun TimerContentConfiguringPreview() {
 
 @Preview
 @Composable
-private fun TimerContentRunningPreview() {
+private fun TimerContentCompactRunningPreview() {
     MaterialTheme {
         TimerContent(
             state = TimerState(
-                duration = com.asura.logger.domain.model.TimerDuration(hours = 0, minutes = 5, seconds = 0),
+                duration = TimerDuration(hours = 0, minutes = 5, seconds = 0),
                 totalDurationMillis = 300_000L,
                 remainingMillis = 180_000L,
                 isRunning = true,
@@ -207,19 +355,38 @@ private fun TimerContentRunningPreview() {
     }
 }
 
-@Preview
+@Preview(widthDp = 700, heightDp = 750) // Foldable Unfolded Inner Screen
 @Composable
-private fun TimerContentFinishedPreview() {
+private fun TimerContentFoldableUnfoldedPreview() {
     MaterialTheme {
         TimerContent(
             state = TimerState(
-                duration = com.asura.logger.domain.model.TimerDuration(hours = 0, minutes = 1, seconds = 0),
-                totalDurationMillis = 60_000L,
-                remainingMillis = 0L,
-                isRunning = false,
+                duration = TimerDuration(hours = 0, minutes = 10, seconds = 0),
+                totalDurationMillis = 600_000L,
+                remainingMillis = 420_000L,
+                isRunning = true,
                 isPaused = false,
-                isFinished = true,
-                progress = 0f
+                isFinished = false,
+                progress = 0.7f
+            ),
+            onIntent = {}
+        )
+    }
+}
+
+@Preview(widthDp = 800, heightDp = 400) // Phone Landscape
+@Composable
+private fun TimerContentLandscapeRunningPreview() {
+    MaterialTheme {
+        TimerContent(
+            state = TimerState(
+                duration = TimerDuration(hours = 0, minutes = 5, seconds = 0),
+                totalDurationMillis = 300_000L,
+                remainingMillis = 180_000L,
+                isRunning = true,
+                isPaused = false,
+                isFinished = false,
+                progress = 0.6f
             ),
             onIntent = {}
         )
