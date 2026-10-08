@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.asura.logger.Log
 import com.asura.logger.presentation.timer.TimerIntent
 
 /**
@@ -100,7 +101,10 @@ fun TimerControls(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedButton(
-                    onClick = { onIntent(TimerIntent.Reset) },
+                    onClick = {
+                        Log.d("Reset button clicked (isRunning=$isRunning, isPaused=$isPaused, isFinished=$isFinished)", tag = "TimerControls_onClick()")
+                        onIntent(TimerIntent.Reset)
+                    },
                     modifier = Modifier
                         .width(110.dp)
                         .height(52.dp),
@@ -127,9 +131,18 @@ fun TimerControls(
         Button(
             onClick = {
                 when {
-                    isRunning -> onIntent(TimerIntent.Pause)
-                    isPaused -> onIntent(TimerIntent.Resume)
-                    else -> onIntent(TimerIntent.Start)
+                    isRunning -> {
+                        Log.d("Pause button clicked (isRunning=$isRunning)", tag = "TimerControls_onClick()")
+                        onIntent(TimerIntent.Pause)
+                    }
+                    isPaused -> {
+                        Log.d("Resume button clicked (isPaused=$isPaused)", tag = "TimerControls_onClick()")
+                        onIntent(TimerIntent.Resume)
+                    }
+                    else -> {
+                        Log.d("Start button clicked (canStart=$canStart)", tag = "TimerControls_onClick()")
+                        onIntent(TimerIntent.Start)
+                    }
                 }
             },
             enabled = canStart || isRunning || isPaused,

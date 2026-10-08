@@ -1,5 +1,6 @@
 package com.asura.logger.domain.usecase.stopwatch
 
+import com.asura.logger.Log
 import com.asura.logger.domain.repository.StopwatchRepository
 
 /**
@@ -16,6 +17,7 @@ class ResetStopwatchUseCase(
      * Executes the reset logic, clearing repository state.
      */
     operator fun invoke() {
+        Log.i("Executing stopwatch reset, clearing laps repository", tag = "ResetStopwatchUseCase_invoke()")
         repository.clearLaps()
     }
 }

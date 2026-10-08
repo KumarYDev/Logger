@@ -2,6 +2,7 @@ package com.asura.logger.core.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.asura.logger.Log
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -95,6 +96,7 @@ abstract class MviViewModel<S : UiState, I : UiIntent, E : UiEffect>(
      * @param intent The user intent to process.
      */
     fun sendIntent(intent: I) {
+        Log.d("Received UI intent: $intent", tag = "MviViewModel_sendIntent()")
         handleIntent(intent)
     }
 
@@ -112,7 +114,10 @@ abstract class MviViewModel<S : UiState, I : UiIntent, E : UiEffect>(
      * @param reducer Lambda taking the current state and returning the updated state.
      */
     protected fun setState(reducer: S.() -> S) {
-        _state.value = _state.value.reducer()
+        val oldState = _state.value
+        val newState = oldState.reducer()
+        _state.value = newState
+        Log.d("State updated: oldState=$oldState -> newState=$newState", tag = "MviViewModel_setState()")
     }
 
     /**
@@ -121,6 +126,7 @@ abstract class MviViewModel<S : UiState, I : UiIntent, E : UiEffect>(
      * @param effect The side effect to deliver.
      */
     protected fun sendEffect(effect: E) {
+        Log.i("Emitting side effect: $effect", tag = "MviViewModel_sendEffect()")
         viewModelScope.launch {
             _effect.send(effect)
         }

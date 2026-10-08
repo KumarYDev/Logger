@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.asura.logger.Log
 
 /**
  * ============================================================================
@@ -69,14 +70,20 @@ fun FloatingNavBar(
             // Stopwatch Logo Button
             FloatingNavIconButton(
                 isSelected = currentScreen == AppScreen.STOPWATCH,
-                onClick = { onNavigate(AppScreen.STOPWATCH) },
+                onClick = {
+                    Log.d("Stopwatch nav button clicked (currentScreen=$currentScreen)", tag = "FloatingNavBar_onClick()")
+                    onNavigate(AppScreen.STOPWATCH)
+                },
                 icon = "⏱️"
             )
 
             // Timer / Hourglass Logo Button
             FloatingNavIconButton(
                 isSelected = currentScreen == AppScreen.TIMER,
-                onClick = { onNavigate(AppScreen.TIMER) },
+                onClick = {
+                    Log.d("Timer nav button clicked (currentScreen=$currentScreen)", tag = "FloatingNavBar_onClick()")
+                    onNavigate(AppScreen.TIMER)
+                },
                 icon = "⏳"
             )
         }

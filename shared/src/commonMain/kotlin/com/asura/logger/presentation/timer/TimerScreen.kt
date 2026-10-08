@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.asura.logger.Log
 import com.asura.logger.domain.model.TimerDuration
 import com.asura.logger.presentation.timer.components.TimerControls
 import com.asura.logger.presentation.timer.components.TimerDurationPicker
@@ -136,7 +137,10 @@ private fun TimerCompactContent(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
-                    FilledTonalButton(onClick = { onIntent(TimerIntent.DismissFinished) }) {
+                    FilledTonalButton(onClick = {
+                        Log.d("Dismiss button clicked on timer finished alert", tag = "TimerScreen_onClick()")
+                        onIntent(TimerIntent.DismissFinished)
+                    }) {
                         Text("Dismiss")
                     }
                 }
@@ -281,7 +285,10 @@ private fun TimerExpandedContent(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
-                        FilledTonalButton(onClick = { onIntent(TimerIntent.DismissFinished) }) {
+                        FilledTonalButton(onClick = {
+                            Log.d("Dismiss button clicked on expanded timer finished alert", tag = "TimerScreen_onClick()")
+                            onIntent(TimerIntent.DismissFinished)
+                        }) {
                             Text("Dismiss")
                         }
                     }

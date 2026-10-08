@@ -1,5 +1,6 @@
 package com.asura.logger.data.datasource
 
+import com.asura.logger.Log
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
@@ -18,5 +19,8 @@ interface TimeSourceProvider {
 class MonotonicTimeSourceProvider(
     private val timeSource: TimeSource = TimeSource.Monotonic
 ) : TimeSourceProvider {
-    override fun markNow(): TimeMark = timeSource.markNow()
+    override fun markNow(): TimeMark {
+        Log.d("Marking monotonic time", tag = "MonotonicTimeSourceProvider_markNow()")
+        return timeSource.markNow()
+    }
 }

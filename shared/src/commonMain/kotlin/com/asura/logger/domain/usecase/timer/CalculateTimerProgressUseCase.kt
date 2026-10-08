@@ -1,5 +1,7 @@
 package com.asura.logger.domain.usecase.timer
 
+import com.asura.logger.Log
+
 /**
  * ============================================================================
  * Use Case: CalculateTimerProgressUseCase
@@ -17,7 +19,12 @@ class CalculateTimerProgressUseCase {
      * @return Normalized float in range [0.0f, 1.0f].
      */
     operator fun invoke(remainingMillis: Long, totalDurationMillis: Long): Float {
-        if (totalDurationMillis <= 0L) return 0f
-        return (remainingMillis.toFloat() / totalDurationMillis.toFloat()).coerceIn(0f, 1f)
+        if (totalDurationMillis <= 0L) {
+            Log.d("Progress calculation with non-positive totalDurationMillis=$totalDurationMillis -> 0.0f", tag = "CalculateTimerProgressUseCase_invoke()")
+            return 0f
+        }
+        val progress = (remainingMillis.toFloat() / totalDurationMillis.toFloat()).coerceIn(0f, 1f)
+        Log.d("Calculated progress: remainingMillis=$remainingMillis, totalDurationMillis=$totalDurationMillis -> progress=$progress", tag = "CalculateTimerProgressUseCase_invoke()")
+        return progress
     }
 }

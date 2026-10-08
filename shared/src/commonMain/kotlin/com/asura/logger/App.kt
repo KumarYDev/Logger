@@ -70,7 +70,10 @@ fun App() {
             // Floating Navigation Bar (Logos only)
             FloatingNavBar(
                 currentScreen = currentScreen,
-                onNavigate = { screen -> currentScreen = screen },
+                onNavigate = { screen ->
+                    Log.i("Navigation changed from $currentScreen to $screen", tag = "App_onNavigate()")
+                    currentScreen = screen
+                },
                 modifier = if (isLandscapeCompact) {
                     Modifier
                         .align(Alignment.BottomEnd)

@@ -1,5 +1,6 @@
 package com.asura.logger.domain.usecase.timer
 
+import com.asura.logger.Log
 import com.asura.logger.domain.model.TimerDuration
 
 /**
@@ -19,7 +20,9 @@ class NormalizeDurationUseCase {
         val clampedHours = hours.coerceIn(0, 99)
         val clampedMinutes = minutes.coerceIn(0, 59)
         val clampedSeconds = seconds.coerceIn(0, 59)
-        return TimerDuration(clampedHours, clampedMinutes, clampedSeconds)
+        val result = TimerDuration(clampedHours, clampedMinutes, clampedSeconds)
+        Log.d("Normalized from HMS: ($hours, $minutes, $seconds) -> $result", tag = "NormalizeDurationUseCase_fromHms()")
+        return result
     }
 
     /**
@@ -30,7 +33,9 @@ class NormalizeDurationUseCase {
         val hours = (nonNegative / 3600).toInt().coerceIn(0, 99)
         val minutes = ((nonNegative % 3600) / 60).toInt()
         val seconds = (nonNegative % 60).toInt()
-        return TimerDuration(hours, minutes, seconds)
+        val result = TimerDuration(hours, minutes, seconds)
+        Log.d("Normalized from total seconds: $totalSeconds -> $result", tag = "NormalizeDurationUseCase_fromTotalSeconds()")
+        return result
     }
 
     /**
@@ -39,6 +44,8 @@ class NormalizeDurationUseCase {
     fun addSeconds(current: TimerDuration, additionalSeconds: Long): TimerDuration {
         val currentTotalSec = current.totalMillis / 1000L
         val newTotalSec = currentTotalSec + additionalSeconds
-        return fromTotalSeconds(newTotalSec)
+        val result = fromTotalSeconds(newTotalSec)
+        Log.d("Added $additionalSeconds seconds to $current -> $result", tag = "NormalizeDurationUseCase_addSeconds()")
+        return result
     }
 }

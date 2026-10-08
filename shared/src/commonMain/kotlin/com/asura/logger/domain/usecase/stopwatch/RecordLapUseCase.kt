@@ -1,5 +1,6 @@
 package com.asura.logger.domain.usecase.stopwatch
 
+import com.asura.logger.Log
 import com.asura.logger.domain.model.Lap
 import com.asura.logger.domain.repository.StopwatchRepository
 
@@ -23,6 +24,7 @@ class RecordLapUseCase(
      * @return The newly generated [Lap].
      */
     operator fun invoke(currentElapsedMillis: Long): Lap {
+        Log.d("Executing lap calculation for elapsedMillis: $currentElapsedMillis", tag = "RecordLapUseCase_invoke()")
         val existingLaps = repository.getLaps()
         val previousTotal = existingLaps.sumOf { it.lapDurationMillis }
         val lapDuration = (currentElapsedMillis - previousTotal).coerceAtLeast(0L)
@@ -35,6 +37,7 @@ class RecordLapUseCase(
         )
 
         repository.addLap(newLap)
+        Log.i("Calculated and saved new lap: $newLap (previousTotalMillis: $previousTotal)", tag = "RecordLapUseCase_invoke()")
         return newLap
     }
 }

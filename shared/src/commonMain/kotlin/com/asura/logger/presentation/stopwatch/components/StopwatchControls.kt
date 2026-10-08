@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.asura.logger.Log
 import com.asura.logger.presentation.stopwatch.StopwatchIntent
 
 /**
@@ -102,8 +103,10 @@ fun StopwatchControls(
                 OutlinedButton(
                     onClick = {
                         if (isRunning) {
+                            Log.d("Lap button clicked (isRunning=$isRunning)", tag = "StopwatchControls_onClick()")
                             onIntent(StopwatchIntent.LapRecorded)
                         } else {
+                            Log.d("Reset button clicked (canReset=$canReset)", tag = "StopwatchControls_onClick()")
                             onIntent(StopwatchIntent.Reset)
                         }
                     },
@@ -141,8 +144,10 @@ fun StopwatchControls(
         Button(
             onClick = {
                 if (isRunning) {
+                    Log.d("Pause button clicked (isRunning=$isRunning)", tag = "StopwatchControls_onClick()")
                     onIntent(StopwatchIntent.Pause)
                 } else {
+                    Log.d("Start/Resume button clicked (isRunning=$isRunning, canReset=$canReset)", tag = "StopwatchControls_onClick()")
                     onIntent(StopwatchIntent.Start)
                 }
             },

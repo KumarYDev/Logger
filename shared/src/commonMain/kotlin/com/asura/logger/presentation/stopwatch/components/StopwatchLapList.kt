@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.asura.logger.Log
 import com.asura.logger.core.util.TimeFormatter
 import com.asura.logger.domain.model.Lap
 
@@ -46,6 +47,7 @@ fun StopwatchLapList(
     // Automatically auto-scroll to the latest lap (index 0) whenever a new lap is added
     LaunchedEffect(laps.size) {
         if (laps.isNotEmpty()) {
+            Log.d("Auto-scrolling lap list to top (laps count=${laps.size})", tag = "StopwatchLapList_LaunchedEffect()")
             listState.animateScrollToItem(0)
         }
     }

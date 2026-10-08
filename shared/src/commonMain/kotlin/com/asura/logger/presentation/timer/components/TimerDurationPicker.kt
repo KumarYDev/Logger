@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.asura.logger.Log
 import com.asura.logger.domain.model.TimerDuration
 import com.asura.logger.presentation.timer.TimerIntent
 
@@ -71,6 +72,7 @@ fun TimerDurationPicker(
                     range = 0..23,
                     label = "hours",
                     onValueChange = { newHours ->
+                        Log.d("Hours wheel changed to $newHours (previous: ${duration.hours})", tag = "TimerDurationPicker_onValueChange()")
                         onIntent(TimerIntent.SetDuration(duration.copy(hours = newHours)))
                     }
                 )
@@ -89,6 +91,7 @@ fun TimerDurationPicker(
                     range = 0..59,
                     label = "min",
                     onValueChange = { newMinutes ->
+                        Log.d("Minutes wheel changed to $newMinutes (previous: ${duration.minutes})", tag = "TimerDurationPicker_onValueChange()")
                         onIntent(TimerIntent.SetDuration(duration.copy(minutes = newMinutes)))
                     }
                 )
@@ -107,6 +110,7 @@ fun TimerDurationPicker(
                     range = 0..59,
                     label = "sec",
                     onValueChange = { newSeconds ->
+                        Log.d("Seconds wheel changed to $newSeconds (previous: ${duration.seconds})", tag = "TimerDurationPicker_onValueChange()")
                         onIntent(TimerIntent.SetDuration(duration.copy(seconds = newSeconds)))
                     }
                 )

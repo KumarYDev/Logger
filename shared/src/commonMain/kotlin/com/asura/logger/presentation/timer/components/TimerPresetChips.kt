@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.asura.logger.Log
 import com.asura.logger.presentation.timer.TimerIntent
 
 /**
@@ -42,7 +43,10 @@ fun TimerPresetChips(
                 else -> "+${seconds / 60}m"
             }
             FilledTonalButton(
-                onClick = { onIntent(TimerIntent.AddSeconds(seconds)) },
+                onClick = {
+                    Log.d("Preset chip clicked: $label (+$seconds seconds)", tag = "TimerPresetChips_onClick()")
+                    onIntent(TimerIntent.AddSeconds(seconds))
+                },
                 shape = RoundedCornerShape(12.dp),
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {

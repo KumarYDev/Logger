@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.asura.logger.Log
 import kotlinx.coroutines.delay
 
 /**
@@ -103,6 +104,7 @@ fun NumberWheelPicker(
                         }
                         val selectedVal = items[settledIndex]
                         if (selectedVal != currentValue) {
+                            Log.d("User scrolled $label wheel settled at value: $selectedVal (previous: $currentValue)", tag = "NumberWheelPicker_onScrollSettled()")
                             currentOnValueChange(selectedVal)
                         }
                     }
@@ -120,6 +122,7 @@ fun NumberWheelPicker(
             listState.firstVisibleItemIndex
         }
         if (currentSettled != targetIndex && !listState.isScrollInProgress) {
+            Log.d("Programmatic scroll for $label wheel to value: $value (index: $targetIndex)", tag = "NumberWheelPicker_LaunchedEffect()")
             isProgrammaticScroll = true
             try {
                 listState.animateScrollToItem(targetIndex)

@@ -6,6 +6,103 @@ Built following **Clean Architecture** (Domain, Data, Presentation, Core) and th
 
 ---
 
+## 📝 Logging System Architecture & Developer Guide
+
+The application features a unified multiplatform logging facade designed to provide transparent, line-by-line visibility into execution flow, state transitions, domain calculations, and user interactions across all supported platforms.
+
+---
+
+### 🔍 1. How the `Log` Object Works
+
+The centralized [`Log`](file:///Volumes/Gate_Keeper/TrainingStudioProjects/Portfolio%20%20Projects/Logger/shared/src/commonMain/kotlin/com/asura/logger/Log.kt) object wraps **Touchlab Kermit** (`co.touchlab.kermit.Logger`), providing a multiplatform logging API that outputs directly to each platform's native logging subsystem.
+
+#### Tagging Standard
+Every log statement specifies an explicit `tag` parameter adhering to the pattern:
+$$\text{Tag} = \texttt{ClassName\_functionName()}$$
+
+If no specific tag is provided, the logging utility automatically falls back to the constant `Log.APP_TAG` (`"ASURA_LOGGER"`).
+
+#### Log Levels
+* **`Log.d(message, tag)` (Debug):** Granular execution traces, incoming UI intents, user gesture/wheel scroll events, and calculation steps.
+* **`Log.i(message, tag)` (Info):** High-level lifecycle transitions, state updates, use-case results, and side-effects.
+* **`Log.w(message, tag)` (Warning):** Recoverable anomalies or unexpected states.
+* **`Log.e(message, tag, throwable)` (Error):** Handled exceptions and critical operational failures.
+
+---
+
+### 🛠️ 2. Developer Guide: How to Use `Log`
+
+To log code execution anywhere in the codebase, invoke `Log` methods with a descriptive message and the standard `ClassName_functionName()` tag:
+
+```kotlin
+class TimerViewModel(
+    private val calculateProgressUseCase: CalculateTimerProgressUseCase
+) : MviViewModel<TimerState, TimerIntent, TimerEffect>(TimerState()) {
+
+    // 1. Log incoming intent execution
+    override fun handleIntent(intent: TimerIntent) {
+        Log.d("Handling intent: $intent", tag = "TimerViewModel_handleIntent()")
+        when (intent) {
+            is TimerIntent.Start -> startTimer()
+            is TimerIntent.Reset -> resetTimer()
+        }
+    }
+
+    // 2. Log state transitions and side-effects
+    private fun startTimer() {
+        Log.i("Starting timer with duration: ${currentState.duration}", tag = "TimerViewModel_startTimer()")
+        setState { copy(isRunning = true) }
+        sendEffect(TimerEffect.Started)
+    }
+}
+```
+
+---
+
+### 📊 3. How to Collect & Filter Logs Across All Variants
+
+You can filter logs either globally using the **`Log.APP_TAG`** constant (`"ASURA_LOGGER"`) or specifically using the **`ClassName_`** prefix across all platforms.
+
+#### 🤖 1. Android
+* **Android Studio Logcat:**
+  Filter by tag:
+  ```text
+  tag:ASURA_LOGGER OR tag:TimerViewModel_ OR tag:StopwatchViewModel_
+  ```
+* **Terminal (`adb logcat`):**
+  ```bash
+  adb logcat -s "ASURA_LOGGER:*" "TimerViewModel_handleIntent():*" "StopwatchViewModel_handleIntent():*"
+  ```
+
+#### 🍏 2. iOS
+* **Xcode Debug Console:**
+  Run the app in Xcode (`⌘ + R`). Logs appear live in the bottom Debug Area console.
+* **macOS `Console.app` (Visual GUI for connected iPhone):**
+  1. Open `/System/Applications/Utilities/Console.app` and select your iPhone under **Devices**.
+  2. Click **Action** in the top menu and check **"Include Info Messages"** and **"Include Debug Messages"**.
+  3. Filter by `process:iosApp` and search for `ASURA_LOGGER` or any `ClassName_` tag in the search field.
+* **macOS Terminal (`log stream` CLI):**
+  ```bash
+  log stream --device "<DEVICE_NAME_OR_UDID>" --process "iosApp" --level debug --predicate 'eventMessage CONTAINS "ASURA_LOGGER" OR eventMessage CONTAINS "ViewModel_"'
+  ```
+
+#### 💻 3. Desktop (macOS, Windows, Linux)
+Run the desktop target from your terminal; logs print directly to standard output:
+```bash
+./gradlew :desktopApp:run
+```
+*(Filter live output: `./gradlew :desktopApp:run | grep -E "ASURA_LOGGER|ViewModel_|UseCase_"`)*
+
+#### 🌐 4. Web (Wasm-JS & JavaScript)
+1. Run the web application:
+   ```bash
+   ./gradlew :webApp:wasmJsBrowserDevelopmentRun
+   ```
+2. Open Browser Developer Tools (**F12** or **Cmd + Option + I**) -> **Console** tab.
+3. Filter by typing `ASURA_LOGGER` or specific class names (e.g., `TimerViewModel`).
+
+---
+
 ## 📱 Screenshots
 
 ### ⏱️ Stopwatch (Portrait)

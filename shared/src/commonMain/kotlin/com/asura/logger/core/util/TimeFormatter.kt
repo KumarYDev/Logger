@@ -1,5 +1,7 @@
 package com.asura.logger.core.util
 
+import com.asura.logger.Log
+
 /**
  * ============================================================================
  * Time Formatting Utility
@@ -31,12 +33,14 @@ object TimeFormatter {
         val secondsStr = padTwoDigits(seconds)
         val minutesStr = padTwoDigits(minutes)
 
-        return if (hours > 0) {
+        val result = if (hours > 0) {
             val hoursStr = padTwoDigits(hours)
             "$hoursStr:$minutesStr:$secondsStr.$centisStr"
         } else {
             "$minutesStr:$secondsStr.$centisStr"
         }
+        Log.d("Formatted stopwatch millis: $millis -> result: $result", tag = "TimeFormatter_formatStopwatch()")
+        return result
     }
 
     /**
@@ -59,19 +63,23 @@ object TimeFormatter {
         val secondsStr = padTwoDigits(seconds)
         val minutesStr = padTwoDigits(minutes)
 
-        return if (hours > 0) {
+        val result = if (hours > 0) {
             val hoursStr = padTwoDigits(hours)
             "$hoursStr:$minutesStr:$secondsStr"
         } else {
             "$minutesStr:$secondsStr"
         }
+        Log.d("Formatted timer millis: $millis -> result: $result", tag = "TimeFormatter_formatTimer()")
+        return result
     }
 
     /**
      * Formats discrete hour, minute, and second components into `HH:MM:SS`.
      */
     fun formatHms(hours: Int, minutes: Int, seconds: Int): String {
-        return "${padTwoDigits(hours.toLong())}:${padTwoDigits(minutes.toLong())}:${padTwoDigits(seconds.toLong())}"
+        val result = "${padTwoDigits(hours.toLong())}:${padTwoDigits(minutes.toLong())}:${padTwoDigits(seconds.toLong())}"
+        Log.d("Formatted HMS: hours=$hours, minutes=$minutes, seconds=$seconds -> result: $result", tag = "TimeFormatter_formatHms()")
+        return result
     }
 
     private fun padTwoDigits(value: Long): String {
