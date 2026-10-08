@@ -36,24 +36,24 @@ To log code execution anywhere in the codebase, invoke `Log` methods with a desc
 
 ```kotlin
 class TimerViewModel(
-    private val calculateProgressUseCase: CalculateTimerProgressUseCase
+  private val calculateProgressUseCase: CalculateTimerProgressUseCase
 ) : MviViewModel<TimerState, TimerIntent, TimerEffect>(TimerState()) {
 
-    // 1. Log incoming intent execution
-    override fun handleIntent(intent: TimerIntent) {
-        Log.d("Handling intent: $intent", tag = "TimerViewModel_handleIntent()")
-        when (intent) {
-            is TimerIntent.Start -> startTimer()
-            is TimerIntent.Reset -> resetTimer()
-        }
+  // 1. Log incoming intent execution
+  override fun handleIntent(intent: TimerIntent) {
+    Log.d("Handling intent: $intent", tag = "TimerViewModel_handleIntent()")
+    when (intent) {
+      is TimerIntent.Start -> startTimer()
+      is TimerIntent.Reset -> resetTimer()
     }
+  }
 
-    // 2. Log state transitions and side-effects
-    private fun startTimer() {
-        Log.i("Starting timer with duration: ${currentState.duration}", tag = "TimerViewModel_startTimer()")
-        setState { copy(isRunning = true) }
-        sendEffect(TimerEffect.Started)
-    }
+  // 2. Log state transitions and side-effects
+  private fun startTimer() {
+    Log.i("Starting timer with duration: ${currentState.duration}", tag = "TimerViewModel_startTimer()")
+    setState { copy(isRunning = true) }
+    sendEffect(TimerEffect.Started)
+  }
 }
 ```
 
@@ -105,47 +105,31 @@ Run the desktop target from your terminal; logs print directly to standard outpu
 
 ## 📱 Screenshots
 
-### ⏱️ Stopwatch (Portrait)
+### 📱 Mobile Portrait Modes
 
-![Stopwatch Portrait](./docs/screenshots/stopwatch_portrait.png)
-
-*Drift-free monotonic stopwatch with lap splits and smooth controls.*
-
----
-
-### ⏳ Timer Duration Wheel Picker (Configuring Mode)
-
-![Timer Wheel Picker](./docs/screenshots/timer_wheel_picker.png)
-
-*Scrollable snap wheel picker for Hours, Minutes, and Seconds with quick preset chips.*
+| ⏱️ Stopwatch Mode | ⏳ Timer Picker Mode | ⏳ Timer Countdown Mode |
+| :---: | :---: | :---: |
+| <img src="./docs/screenshots/stopwatch_portrait.png" width="270" alt="Stopwatch Portrait" /> | <img src="./docs/screenshots/timer_wheel_picker.png" width="270" alt="Timer Wheel Picker" /> | <img src="./docs/screenshots/timer_running_ring.png" width="270" alt="Timer Running Ring" /> |
+| *Monotonic stopwatch & lap splits* | *Snap wheel picker & presets* | *Animated circular progress ring* |
 
 ---
 
-### ⏳ Timer Countdown (Running / Active Mode)
+### 📐 Adaptive & Dual-Pane Mode
 
-![Timer Running Ring](./docs/screenshots/timer_running_ring.png)
-
-*Animated circular countdown progress gauge with real-time remaining countdown.*
-
----
-
-### 📐 Dual-Pane Mode (Phone Landscape & Foldable Unfolded Screens)
-
-![Stopwatch Landscape](./docs/screenshots/stopwatch_landscape.png)
-
-*Side-by-side dual-pane layout: Clock & Controls on left, full-height Lap Table on right.*
-
-![Foldable Unfolded](./docs/screenshots/foldable_unfolded.png)
-
-*Dual-pane layout optimized for wide unfolded foldable screens and tablets.*
+| 📱 Phone Landscape (Dual-Pane) | 📱 Foldable / Tablet (Unfolded) |
+| :---: | :---: |
+| <img src="./docs/screenshots/stopwatch_landscape.png" width="450" alt="Stopwatch Landscape" /> | <img src="./docs/screenshots/foldable_unfolded.png" width="450" alt="Foldable Unfolded" /> |
+| *Side-by-side: Clock & controls on left, Lap table on right* | *Optimized for wide unfolded foldable screens and tablets* |
 
 ---
 
 ### 🧭 Floating Navigation Bar
 
-![Floating Navigation Bar](./docs/screenshots/floating_nav_bar.png)
-
-*Logo-only floating navigation bar with spring-animated selection indicator.*
+<p align="center">
+  <img src="./docs/screenshots/floating_nav_bar.png" width="340" alt="Floating Navigation Bar" />
+  <br />
+  <em>Logo-only floating navigation bar with spring-animated selection indicator</em>
+</p>
 
 ---
 
